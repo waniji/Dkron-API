@@ -1,0 +1,6 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use Dkron::API::CLI;
+
+exit Dkron::API::CLI->new->run(@ARGV);
