@@ -1,0 +1,4 @@
+name = "Dkron-API"
+# badges = ["travis"]
+module_maker="ModuleBuildTiny"
+
