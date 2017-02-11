@@ -48,6 +48,12 @@ sub post_job {
     $self->json->decode($res->content);
 }
 
+sub delete_job {
+    my ($self, $job_name) = @_;
+    my $res = $self->ua->delete($self->base_url . "jobs/$job_name");
+    $self->json->decode($res->content);
+}
+
 1;
 __END__
 
