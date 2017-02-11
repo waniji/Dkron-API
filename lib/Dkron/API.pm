@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Furl;
-use JSON::XS qw/decode_json/;
+use JSON::XS;
 
 our $VERSION = "0.01";
 
@@ -22,6 +22,11 @@ sub ua {
     $self->{ua} //= Furl->new(timeout => 3);
 }
 
+sub json {
+    my $self = shift;
+    $self->{json} //= JSON::XS->new->utf8;
+}
+
 sub base_url {
     my $self = shift;
     $self->{base_url} //= sprintf("http://%s:%s/v1/", $self->{host}, $self->{port});
@@ -30,9 +35,18 @@ sub base_url {
 sub get_jobs {
     my $self = shift;
     my $res = $self->ua->get($self->base_url . "jobs");
-    decode_json $res->content;
+    $self->json->decode($res->content);
 }
 
+sub post_job {
+    my ($self, $data) = @_;
+    my $res = $self->ua->post(
+        $self->base_url . "jobs",
+        ['Content-Type' => 'application/json'],
+        $self->json->encode($data),
+    );
+    $self->json->decode($res->content);
+}
 
 1;
 __END__
