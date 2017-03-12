@@ -51,6 +51,7 @@ sub parse_options {
         name=s
         schedule=s
         command=s
+        tags=s
     /);
 
     return %options;
@@ -70,6 +71,7 @@ sub cmd_post_job {
         name => $options{name},
         schedule => $options{schedule},
         command => $options{command},
+        tags => $self->json->decode($options{tags}),
     });
     print $self->json->encode($result), "\n";
 }
