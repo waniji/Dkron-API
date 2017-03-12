@@ -19,7 +19,7 @@ sub new {
 
 sub ua {
     my $self = shift;
-    $self->{ua} //= Furl->new(timeout => 3);
+    $self->{ua} //= Furl->new(timeout => 10);
 }
 
 sub json {
