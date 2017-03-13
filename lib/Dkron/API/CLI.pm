@@ -115,15 +115,30 @@ sub cmd_post_job {
     /);
 
     my %options = $self->_parse_options($argv, qw/
+        shell
+        owner=s
+        owner_email=s
+        disabled
         tags=s
+        retries=i
+        parent_job=s
+        processors=s
+        concurrency=s
     /);
 
-    my $result = $client->post_job({
-        name => $parameters{name},
-        schedule => $parameters{schedule},
-        command => $parameters{command},
-        tags => $self->json->decode($options{tags}),
-    });
+    for my $key (keys %options) {
+        if ($key eq "tags" || $key eq "processors") {
+            $parameters{$key} = $self->json->decode($options{$key});
+        }
+        elsif ($key eq "shell" || $key eq "disabled") {
+            $parameters{$key} = $options{$key} ? Types::Serialiser::true : Types::Serialiser::false;
+        }
+        else {
+            $parameters{$key} = $options{$key};
+        }
+    }
+
+    my $result = $client->post_job(\%parameters);
     print $self->json->encode($result), "\n";
 }
 
