@@ -112,6 +112,17 @@ sub cmd_get_jobs {
     print $self->json->encode($result), "\n";
 }
 
+sub cmd_get_job {
+    my ($self, $client, $argv) = @_;
+
+    my %options = $self->_parse_required_parameters($argv, qw/
+        name=s
+    /);
+
+    my $result = $client->get_job($options{name});
+    print $self->json->encode($result), "\n";
+}
+
 sub cmd_post_job {
     my ($self, $client, $argv) = @_;
 

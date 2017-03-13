@@ -44,6 +44,12 @@ sub get_jobs {
     $self->json->decode($res->content);
 }
 
+sub get_job {
+    my ($self, $job_name) = @_;
+    my $res = $self->ua->get($self->base_url . "jobs/$job_name");
+    $self->json->decode($res->content);
+}
+
 sub post_job {
     my ($self, $data) = @_;
     my $res = $self->ua->post(
