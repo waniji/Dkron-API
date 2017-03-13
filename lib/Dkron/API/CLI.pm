@@ -57,6 +57,23 @@ sub parse_options {
     return %options;
 }
 
+sub commands {
+    my $self = shift;
+
+    no strict 'refs';
+    map { s/^cmd_//; $_ }
+        grep { /^cmd_.*/ && $self->can($_) } sort keys %{__PACKAGE__."::"};
+}
+
+sub cmd_usage {
+    my $self = shift;
+    print(<<HELP);
+Usage: dkron-cli <command> --host <integer> --port <integer> [parameters]
+where <command> is one of:
+  @{[ join ", ", $self->commands ]}
+HELP
+}
+
 sub cmd_get_jobs {
     my ($self, $client, %options) = @_;
 
