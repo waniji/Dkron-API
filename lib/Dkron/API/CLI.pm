@@ -3,9 +3,10 @@ use strict;
 use warnings;
 use Getopt::Long;
 use Try::Tiny;
+use JSON::XS;
 
 use Dkron::API;
-use JSON::XS;
+use Dkron::API::Error;
 
 sub new {
     my $class = shift;
@@ -21,22 +22,48 @@ sub run {
     my ($self, @argv) = @_;
 
     my $command = shift @argv;
-    my %options = $self->parse_options(@argv);
 
     my $exit_code = try {
+        my %parameters = $self->_parse_required_parameters(@argv);
         my $client = Dkron::API->new(
-            host => $options{host},
-            port => $options{port},
+            host => $parameters{host},
+            port => $parameters{port},
         );
         my $call = $self->can("cmd_$command") or die "Invalid command: $command";
-        $self->$call($client, %options);
+        $self->$call($client, %parameters);
         return 0;
     } catch {
-        warn $_;
+        if ($_->isa('Dkron::API::Error::MissingRequiredParameter')) {
+            warn $_->error, "\n";
+            $self->cmd_usage;
+        } else {
+            warn $_;
+        }
         return 255;
     };
 
     return $exit_code;
+}
+
+sub _parse_required_parameters {
+    my ($self, @argv) = @_;
+
+    my $p = Getopt::Long::Parser->new(
+        config => [ "posix_default", "no_ignore_case", "pass_through" ]
+    );
+    $p->getoptionsfromarray(\@argv, \my %parameters, qw/
+        host=s
+        port=s
+    /);
+
+    my @required_parameters = qw/host port/;
+    for my $required (@required_parameters) {
+        unless (exists $parameters{$required}) {
+            Dkron::API::Error::MissingRequiredParameter->throw(error => "'--$required' is required");
+        }
+    }
+
+    return %parameters;
 }
 
 sub parse_options {
@@ -68,7 +95,7 @@ sub commands {
 sub cmd_usage {
     my $self = shift;
     print(<<HELP);
-Usage: dkron-cli <command> --host <integer> --port <integer> [parameters]
+Usage: dkron-cli <command> --host <string> --port <integer> [parameters]
 where <command> is one of:
   @{[ join ", ", $self->commands ]}
 HELP
