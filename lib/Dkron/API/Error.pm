@@ -23,4 +23,7 @@ sub error {
 package Dkron::API::Error::MissingRequiredParameter;
 use parent 'Dkron::API::Error';
 
+package Dkron::API::Error::UnknownOption;
+use parent 'Dkron::API::Error';
+
 1;

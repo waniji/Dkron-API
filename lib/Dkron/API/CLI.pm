@@ -24,17 +24,22 @@ sub run {
     my $command = shift @argv;
 
     my $exit_code = try {
-        my %parameters = $self->_parse_required_parameters(@argv);
+        my %parameters = $self->_parse_required_parameters(\@argv, qw/
+            host=s
+            port=i
+        /);
         my $client = Dkron::API->new(
             host => $parameters{host},
             port => $parameters{port},
         );
         my $call = $self->can("cmd_$command") or die "Invalid command: $command";
-        $self->$call($client, %parameters);
+        $self->$call($client, \@argv);
         return 0;
     } catch {
         if ($_->isa('Dkron::API::Error::MissingRequiredParameter')) {
             warn $_->error, "\n";
+            $self->cmd_usage;
+        } elsif ($_->isa('Dkron::API::Error::UnknownOption')) {
             $self->cmd_usage;
         } else {
             warn $_;
@@ -46,17 +51,15 @@ sub run {
 }
 
 sub _parse_required_parameters {
-    my ($self, @argv) = @_;
+    my ($self, $argv, @spec) = @_;
 
     my $p = Getopt::Long::Parser->new(
         config => [ "posix_default", "no_ignore_case", "pass_through" ]
     );
-    $p->getoptionsfromarray(\@argv, \my %parameters, qw/
-        host=s
-        port=s
-    /);
+    $p->getoptionsfromarray($argv, \my %parameters, @spec);
 
-    my @required_parameters = qw/host port/;
+    # TODO: Make a better way
+    my @required_parameters = map { s/=.*//; $_; } @spec;
     for my $required (@required_parameters) {
         unless (exists $parameters{$required}) {
             Dkron::API::Error::MissingRequiredParameter->throw(error => "'--$required' is required");
@@ -66,20 +69,14 @@ sub _parse_required_parameters {
     return %parameters;
 }
 
-sub parse_options {
-    my ($self, @argv) = @_;
+sub _parse_options {
+    my ($self, $argv, @spec) = @_;
 
     my $p = Getopt::Long::Parser->new(
         config => [ "posix_default", "no_ignore_case" ]
     );
-    $p->getoptionsfromarray(\@argv, \my %options, qw/
-        host=s
-        port=s
-        name=s
-        schedule=s
-        command=s
-        tags=s
-    /);
+    $p->getoptionsfromarray($argv, \my %options, @spec)
+        or Dkron::API::Error::UnknownOption->throw();
 
     return %options;
 }
@@ -102,26 +99,40 @@ HELP
 }
 
 sub cmd_get_jobs {
-    my ($self, $client, %options) = @_;
+    my ($self, $client) = @_;
 
     my $result = $client->get_jobs;
     print $self->json->encode($result), "\n";
 }
 
 sub cmd_post_job {
-    my ($self, $client, %options) = @_;
+    my ($self, $client, $argv) = @_;
+
+    my %parameters = $self->_parse_required_parameters($argv, qw/
+        name=s
+        schedule=s
+        command=s
+    /);
+
+    my %options = $self->_parse_options($argv, qw/
+        tags=s
+    /);
 
     my $result = $client->post_job({
-        name => $options{name},
-        schedule => $options{schedule},
-        command => $options{command},
+        name => $parameters{name},
+        schedule => $parameters{schedule},
+        command => $parameters{command},
         tags => $self->json->decode($options{tags}),
     });
     print $self->json->encode($result), "\n";
 }
 
 sub cmd_delete_job {
-    my ($self, $client, %options) = @_;
+    my ($self, $client, $argv) = @_;
+
+    my %options = $self->_parse_required_parameters($argv, qw/
+        name=s
+    /);
 
     my $result = $client->delete_job($options{name});
     print $self->json->encode($result), "\n";
