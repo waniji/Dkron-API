@@ -98,6 +98,13 @@ where <command> is one of:
 HELP
 }
 
+sub cmd_status {
+    my ($self, $client) = @_;
+
+    my $result = $client->status;
+    print $self->json->encode($result), "\n";
+}
+
 sub cmd_get_jobs {
     my ($self, $client) = @_;
 

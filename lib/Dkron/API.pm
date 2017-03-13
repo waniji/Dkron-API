@@ -32,6 +32,12 @@ sub base_url {
     $self->{base_url} //= sprintf("http://%s:%s/v1/", $self->{host}, $self->{port});
 }
 
+sub status {
+    my $self = shift;
+    my $res = $self->ua->get($self->base_url);
+    $self->json->decode($res->content);
+}
+
 sub get_jobs {
     my $self = shift;
     my $res = $self->ua->get($self->base_url . "jobs");
