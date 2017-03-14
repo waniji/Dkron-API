@@ -66,6 +66,12 @@ sub delete_job {
     $self->json->decode($res->content);
 }
 
+sub get_executions {
+    my ($self, $job_name) = @_;
+    my $res = $self->ua->get($self->base_url . "executions/$job_name");
+    $self->json->decode($res->content);
+}
+
 1;
 __END__
 

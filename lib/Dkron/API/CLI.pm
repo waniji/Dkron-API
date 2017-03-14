@@ -171,4 +171,15 @@ sub cmd_delete_job {
     print $self->json->encode($result), "\n";
 }
 
+sub cmd_get_executions {
+    my ($self, $client, $argv) = @_;
+
+    my %options = $self->_parse_required_parameters($argv, qw/
+        name=s
+    /);
+
+    my $result = $client->get_executions($options{name});
+    print $self->json->encode($result), "\n";
+}
+
 1;
