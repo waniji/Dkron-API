@@ -94,6 +94,16 @@ sub get_members {
     $self->json->decode($res->content);
 }
 
+sub leave_cluster {
+    my ($self) = @_;
+
+    $self->ua->post(
+        $self->base_url . "leave",
+        ['Content-Type' => 'application/json'],
+        undef
+    );
+}
+
 1;
 __END__
 

@@ -207,4 +207,10 @@ sub cmd_get_members {
     print $self->json->encode($result), "\n";
 }
 
+sub cmd_leave_cluster {
+    my ($self, $client) = @_;
+
+    $client->leave_cluster;
+}
+
 1;
