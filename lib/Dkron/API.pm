@@ -111,15 +111,31 @@ __END__
 
 =head1 NAME
 
-Dkron::API - It's new $module
+Dkron::API - Client library for Dkron
 
 =head1 SYNOPSIS
 
     use Dkron::API;
 
+    my $dkron = Dkron::API->new(
+        host => 'localhost',
+        port => 8946,
+    );
+    $dkron->execute_job('job');
+
 =head1 DESCRIPTION
 
 Dkron::API is ...
+
+=head1 SEE ALSO
+
+=over 4
+
+=item *
+
+L<http://dkron.io/docs/api/> - Dkron REST API documentation
+
+=back
 
 =head1 LICENSE
 
@@ -130,7 +146,7 @@ it under the same terms as Perl itself.
 
 =head1 AUTHOR
 
-Makoto Sasaki E<lt>E<gt>
+Makoto Sasaki
 
 =cut
 

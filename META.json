@@ -1,7 +1,7 @@
 {
-   "abstract" : "It's new $module",
+   "abstract" : "Client library for Dkron",
    "author" : [
-      "Makoto Sasaki <>"
+      "Makoto Sasaki"
    ],
    "dynamic_config" : 0,
    "generated_by" : "Minilla/v3.0.9, CPAN::Meta::Converter version 2.150001",
@@ -42,6 +42,10 @@
       },
       "runtime" : {
          "requires" : {
+            "Furl" : "0",
+            "Getopt::Long" : "2.39",
+            "JSON::XS" : "0",
+            "Try::Tiny" : "0",
             "perl" : "5.008001"
          }
       },
@@ -52,5 +56,19 @@
       }
    },
    "release_status" : "unstable",
-   "version" : "0.01"
+   "resources" : {
+      "bugtracker" : {
+         "web" : "https://github.com/waniji/Dkron-API/issues"
+      },
+      "homepage" : "https://github.com/waniji/Dkron-API",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/waniji/Dkron-API.git",
+         "web" : "https://github.com/waniji/Dkron-API"
+      }
+   },
+   "version" : "0.01",
+   "x_contributors" : [
+      "Makoto Sasaki <wanigoya@gmail.com>"
+   ]
 }
