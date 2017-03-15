@@ -98,10 +98,10 @@ where <command> is one of:
 HELP
 }
 
-sub cmd_status {
+sub cmd_get_status {
     my ($self, $client) = @_;
 
-    my $result = $client->status;
+    my $result = $client->get_status;
     print $self->json->encode($result), "\n";
 }
 
