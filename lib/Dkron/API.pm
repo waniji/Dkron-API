@@ -50,7 +50,7 @@ sub get_job {
     $self->json->decode($res->content);
 }
 
-sub post_job {
+sub set_job {
     my ($self, $data) = @_;
     my $res = $self->ua->post(
         $self->base_url . "jobs",

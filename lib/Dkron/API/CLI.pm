@@ -123,7 +123,7 @@ sub cmd_get_job {
     print $self->json->encode($result), "\n";
 }
 
-sub cmd_post_job {
+sub cmd_set_job {
     my ($self, $client, $argv) = @_;
 
     my %parameters = $self->_parse_required_parameters($argv, qw/
@@ -156,7 +156,7 @@ sub cmd_post_job {
         }
     }
 
-    my $result = $client->post_job(\%parameters);
+    my $result = $client->set_job(\%parameters);
     print $self->json->encode($result), "\n";
 }
 
