@@ -88,6 +88,12 @@ sub get_leader {
     $self->json->decode($res->content);
 }
 
+sub get_members {
+    my ($self) = @_;
+    my $res = $self->ua->get($self->base_url . "members");
+    $self->json->decode($res->content);
+}
+
 1;
 __END__
 

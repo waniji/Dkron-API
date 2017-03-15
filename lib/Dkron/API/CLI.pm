@@ -200,4 +200,11 @@ sub cmd_get_leader {
     print $self->json->encode($result), "\n";
 }
 
+sub cmd_get_members {
+    my ($self, $client) = @_;
+
+    my $result = $client->get_members;
+    print $self->json->encode($result), "\n";
+}
+
 1;
