@@ -82,6 +82,12 @@ sub execute {
     $self->json->decode($res->content);
 }
 
+sub get_leader {
+    my ($self) = @_;
+    my $res = $self->ua->get($self->base_url . "leader");
+    $self->json->decode($res->content);
+}
+
 1;
 __END__
 

@@ -193,4 +193,11 @@ sub cmd_execute {
     print $self->json->encode($result), "\n";
 }
 
+sub cmd_get_leader {
+    my ($self, $client) = @_;
+
+    my $result = $client->get_leader;
+    print $self->json->encode($result), "\n";
+}
+
 1;
