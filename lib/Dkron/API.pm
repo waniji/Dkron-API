@@ -72,7 +72,7 @@ sub get_executions {
     $self->json->decode($res->content);
 }
 
-sub execute {
+sub execute_job {
     my ($self, $job_name) = @_;
     my $res = $self->ua->post(
         $self->base_url . "jobs/$job_name",
